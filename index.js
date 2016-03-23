@@ -2,11 +2,29 @@ const jsdom = require('jsdom')
 const fs = require('fs')
 const Promise = require('promise')
 const jquery = fs.readFileSync('jquery.js', 'utf-8')
+const pages = [1, 2, 3]
+const symbols = JSON.parse(fs.readFileSync('SET50.json', 'utf-8'))
 
-function getFromUrl(url) {
+function formatDate(input) {
+  // 29/01/2559
+  const array = input.split('/').reverse()
+  const thaiYear = parseInt(array[0]) - 543
+  return new Date(`${thaiYear}-${array[1]}-${array[2]}`)
+}
+
+function saveToFile(name, data) {
+  fs.writeFile(`${name}.json`, JSON.stringify(data), function(err) {
+    if(err) {
+      return console.log(err);
+    }
+    console.log(`save ${name}.json!`)
+  })
+}
+
+function getFromUrl(symbol, page) {
   return new Promise((resolve, reject) => {
     jsdom.env({
-      url,
+      url: `http://www.set.or.th/set/historicaltrading.do?symbol=${symbol}&page=${page}&ssoPageId=2&language=th&country=TH`,
       src: [jquery],
       done: (err, window) => {
         if (err) {
@@ -19,16 +37,14 @@ function getFromUrl(url) {
           $(this).each(function(j) {
             const children = $(this).children()
             items.push({
-              date: children.eq(0).text(),
+              symbol,
+              date: new Date(children.eq(0).text().replaceAll('/','-')),
               open: children.eq(1).text(),
               high: children.eq(2).text(),
               low: children.eq(3).text(),
               close: children.eq(4).text(),
               volume: children.eq(7).text(),
             })
-            //$(this).children().each(function(k) {
-            //  console.log(`index:${k} ======${$(this).text()}`)
-            //})
           })
         })
         resolve(items)
@@ -37,14 +53,29 @@ function getFromUrl(url) {
   })
 }
 
-const pages = [1, 2, 3]
-const promises = pages.map(item => {
-  return getFromUrl(`http://www.set.or.th/set/historicaltrading.do?symbol=KTB&page=${item}&ssoPageId=2&language=th&country=TH`)
-})
+function getAll(symbol) {
+  const array = pages.map(page => getFromUrl(symbol, page))
+  return Promise.resolve(array)
+}
 
-Promise.all(promises).then(res => {
-  console.log(JSON.stringify(Array.prototype.slice().concat(res[0], res[1], res[2])))
-}, reason => {
-  console.log(reason)
-})
+function fetchSymbol(symbol) {
+  return getAll(symbol)
+    .then(res => Promise.all(res))
+    .then(res => Array.prototype.slice().concat.apply([], res))
+    .then(res => {
+      saveToFile(symbol, res)
+      return Promise.resolve()
+    })
+}
 
+function loopSymbol() {
+  return symbols.map(symbol => fetchSymbol(symbol.toUpperCase()))
+}
+
+function start() {
+  return Promise.all(loopSymbol())
+}
+
+//start()
+
+console.log(formatDate('29/01/2559'))
