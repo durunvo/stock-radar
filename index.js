@@ -37,11 +37,12 @@ function getFromUrl(url) {
   })
 }
 
-const promise1 = getFromUrl('http://www.set.or.th/set/historicaltrading.do?symbol=KTB&page=0&ssoPageId=2&language=th&country=TH')
-const promise2 = getFromUrl('http://www.set.or.th/set/historicaltrading.do?symbol=KTB&page=1&ssoPageId=2&language=th&country=TH')
-const promise3 = getFromUrl('http://www.set.or.th/set/historicaltrading.do?symbol=KTB&page=2&ssoPageId=2&language=th&country=TH')
+const pages = [1, 2, 3]
+const promises = pages.map(item => {
+  return getFromUrl(`http://www.set.or.th/set/historicaltrading.do?symbol=KTB&page=${item}&ssoPageId=2&language=th&country=TH`)
+})
 
-Promise.all([promise1, promise2, promise3]).then(res => {
+Promise.all(promises).then(res => {
   console.log(JSON.stringify(Array.prototype.slice().concat(res[0], res[1], res[2])))
 }, reason => {
   console.log(reason)
