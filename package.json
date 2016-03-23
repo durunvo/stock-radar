@@ -1,0 +1,16 @@
+{
+  "name": "set-stock",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "babel-core": "^6.7.4",
+    "jsdom": "^8.1.0",
+    "promise": "^7.1.1"
+  }
+}
