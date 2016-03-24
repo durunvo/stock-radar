@@ -1,10 +1,9 @@
 const jsdom = require('jsdom')
 const fs = require('fs')
 const jquery = fs.readFileSync('jquery.js', 'utf-8')
-const market = 'SET100'
 
 jsdom.env({
-  url: `http://marketdata.set.or.th/mkt/sectorquotation.do?sector=${market}&langauge=en&country=US`,
+  url: `http://marketdata.set.or.th/mkt/sectorquotation.do?sector=SET50&langauge=en&country=US`,
   src: [jquery],
   done: (err, window) => {
     if (err) {
@@ -22,7 +21,7 @@ jsdom.env({
 
 
 function saveToFile(file) {
-  fs.writeFile(`${market}.json`, JSON.stringify(file), function(err) {
+  fs.writeFile("SET50.json", JSON.stringify(file), function(err) {
     if(err) {
       return console.log(err);
     }
