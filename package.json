@@ -33,6 +33,7 @@
     "jade": "^1.11.0",
     "jsdom": "^8.1.0",
     "mongoose": "^4.4.9",
-    "node-fetch": "^1.4.1"
+    "node-fetch": "^1.4.1",
+    "talib": "^1.0.2"
   }
 }
