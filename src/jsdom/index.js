@@ -1,6 +1,8 @@
-const jsdom = require('jsdom')
+'use strict'
+
+const cheerio = require('cheerio')
+const fetch = require('node-fetch')
 const fs = require('fs')
-const jquery = fs.readFileSync(__dirname + '/jquery.js', 'utf-8')
 const pages = [0,1,2]
 const symbols = JSON.parse(fs.readFileSync(__dirname + '/SET100.json', 'utf-8'))
 const stockModel = require('../talib/database/Stocks.model')
@@ -37,34 +39,26 @@ function formatData(children, symbol) {
 }
 
 function getFromUrl(symbol, page, first) {
-  return new Promise((resolve, reject) => {
-    const url = `http://www.set.or.th/set/historicaltrading.do?symbol=${symbol}&page=${page}&ssoPageId=2&language=th&country=TH`
-    jsdom.env({
-      url,
-      src: [jquery],
-      done: (err, window) => {
-        if (err) {
-          reject(err)
-          return
-        }
-        console.log(i++, `${symbol} => done`)
-        const $ = window.$
-        if (first) {
-          const children = $('.table-info tbody tr').eq(0).children()
-          resolve(formatData(children, symbol))
-        } else {
-          const items = []
-          $('.table-info tbody tr').each(function(i) {
-            $(this).each(function(j) {
-              const children = $(this).children()
-              items.push(formatData(children, symbol))
-            })
+  const url = `http://www.set.or.th/set/historicaltrading.do?symbol=${symbol}&page=${page}&ssoPageId=2&language=th&country=TH`
+  return fetch(url)
+    .then(res => res.text())
+    .then(body => {
+      console.log(i++, `${symbol} => done`)
+      const $ = cheerio.load(body)
+      if (first) {
+        const children = $('.table-info tbody tr').eq(0).children()
+        return formatData(children, symbol)
+      } else {
+        const items = []
+        $('.table-info tbody tr').each(function(i) {
+          $(this).each(function(j) {
+            const children = $(this).children()
+            items.push(formatData(children, symbol))
           })
-          resolve(items)
-        }
+        })
+        return items
       }
     })
-  })
 }
 
 function getAll(symbol) {
