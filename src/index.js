@@ -46,7 +46,7 @@ mongoose.connect(mongoUri, function (err, res) {
   } else {
     console.log ('Succeeded connected to: ' + mongoUri);
     app.listen(port, function () {
-      console.log('Example app listening on port:', port);
+      console.log('Example app listening on port', port);
     });
   }
 });
