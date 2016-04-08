@@ -28,6 +28,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "better-npm-run": "0.0.8",
     "express": "^4.13.4",
     "jade": "^1.11.0",
     "jsdom": "^8.1.0",
