@@ -1,0 +1,37 @@
+{
+  "name": "set-stock",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.js",
+  "scripts": {
+    "update": "node src/schedule.js",
+    "dev": "better-npm-run build:dev",
+    "start": "better-npm-run build:prod",
+    "test": "npm test"
+  },
+  "betterScripts": {
+    "build:prod": {
+      "command": "node .",
+      "env": {
+        "NODE_ENV": "production",
+        "MONGOLAB_URI": "mongodb://heroku_p81dx3w8:l8g5vqt67j70fp0fkqvjpq94du@ds019980.mlab.com:19980/heroku_p81dx3w8"
+      }
+    },
+    "build:dev": {
+      "command": "nodemon .",
+      "env": {
+        "NODE_ENV": "development",
+        "MONGOLAB_URI": "mongodb://localhost:27017/set-stock"
+      }
+    }
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.13.4",
+    "jade": "^1.11.0",
+    "jsdom": "^8.1.0",
+    "mongoose": "^4.4.9",
+    "node-fetch": "^1.4.1"
+  }
+}

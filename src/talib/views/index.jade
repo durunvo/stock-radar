@@ -1,0 +1,27 @@
+doctype html
+html
+  script(type='text/javascript' src='/jquery-latest.js')
+  script(type='text/javascript' src='/jquery.tablesorter.js')
+  script.
+    $(document).ready(function() {
+      $("#myTable").tablesorter();
+    });
+  body
+    header= algo
+    table#myTable
+      thead
+        tr
+          th= 'Symbol'
+          th= 'Balance'
+          th= 'Net Profits'
+          th= 'Trades'
+          th= 'Profit/Loss'
+      tbody
+        each val in result
+          tr
+            td= val.symbol
+            td= val.summary.cashBalance
+            td= val.summary.netProfits
+            td= val.summary.trades
+            td= val.summary['profit/loss']
+
